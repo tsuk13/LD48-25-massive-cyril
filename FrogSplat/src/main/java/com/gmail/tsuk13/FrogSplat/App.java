@@ -35,7 +35,8 @@ public class App
 	public void loop(){
 		while(running){
     		//GameLoop
-    		
+			Entity e = new Entity(50,50,20,20);
+			e.draw();	
     		//Syncronizing stuff
 			Display.sync(60);
 			Display.update();
@@ -52,6 +53,33 @@ public class App
     	app.start();
     	app.loop();
     	app.end();
+    }
+    
+    //My utility classes
+    public class Entity{
+    	public double x;
+    	public double y;
+    	public double xSize;
+    	public double ySize;
+    	
+    	public Entity(double x, double y, double xSize, double ySize){
+    		this.x = x;
+    		this.y = y;
+    		this.xSize = xSize;
+    		this.ySize = ySize;
+    	}
+    	
+    	public void draw(){
+    		GL11.glColor3f(.5f, .5f, 1f);
+			GL11.glBegin(GL11.GL_QUADS);
+				GL11.glVertex2d(x, y);
+				GL11.glVertex2d(x+xSize, y);
+				GL11.glVertex2d(x+xSize, y+ySize);
+				GL11.glVertex2d(x, y+ySize);
+			GL11.glEnd();
+    	}
+    	
+    	
     }
     	
 }
