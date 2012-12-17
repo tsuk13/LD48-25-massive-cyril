@@ -216,7 +216,7 @@ public class App
 			while(fIt.hasNext()){
 				Frog f = fIt.next();
 				if(this.isCollide(f)){
-					System.out.println("GOAAAALLLLL!!!!!!!");
+					System.out.println("Goal at lane: " + this.lane);
 					int tmp = fIt.previousIndex();
 					frogs.remove(tmp);
 					fIt = frogs.listIterator(tmp);
