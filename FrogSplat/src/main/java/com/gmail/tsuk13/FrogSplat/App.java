@@ -36,6 +36,8 @@ public class App
 	LinkedList<Car> cars = new LinkedList<Car>();
 	LinkedList<Card> cards = new LinkedList<Card>();
 	Random rnd = new Random();
+	boolean isCardHeld = false;
+	Card cardHeld;
 	
 	public void start(){
 		try {
@@ -98,7 +100,18 @@ public class App
 			if(Mouse.isButtonDown(0)){
 				int mouseX = getMouseX();
 				int mouseY = getMouseY();
-				//if()
+				ListIterator<Card> crdIt = cards.listIterator();
+				while(crdIt.hasNext()){
+					Card c = crdIt.next();
+					if(c.isCard(mouseX, mouseY)){
+						isCardHeld = true;
+						cardHeld = c;
+					}
+						
+				}
+				if(isCardHeld){
+					cardHeld.mouseDraw(mouseX, mouseY);
+				}
 				System.out.println("Mouse: " + mouseX + ", " + mouseY);
 			}
     		//Syncronizing stuff
@@ -337,6 +350,18 @@ public class App
 			if(x > this.x && x < this.x + xSize && y > this.y && y < this.y + ySize)
 				return true;
 			return false;
+		}
+		public void mouseDraw(int xin, int yin){
+			int x = (int) (xin - columnsize * size * .5);
+			int y = (int) (yin - rowsize * .5);
+			GL11.glColor3f(colorR, colorG, colorB);
+			GL11.glBegin(GL11.GL_QUADS);
+				GL11.glVertex2d(x, y);
+				GL11.glVertex2d(x+columnsize * size, y);
+				GL11.glVertex2d(x+columnsize * size, y+rowsize);
+				GL11.glVertex2d(x, y+rowsize);
+			GL11.glEnd();
+			
 		}
 		
 		
