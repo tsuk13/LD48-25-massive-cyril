@@ -27,12 +27,15 @@ public class App
 	double topLeftY = 0;
 	int frogSpeed = 60;
 	int time = 0;
+	double cardsY = topLeftY + numRows*rowsize + 5;
+	double cardsYSize = ySize - 5 - cardsY;
+	double cardsX = 5;
+	double cardsXSize = (xSize - 5) / 5;
 	LinkedList<Frog> frogs = new LinkedList<Frog>();
 	LinkedList<Goal> goals = new LinkedList<Goal>();
 	LinkedList<Car> cars = new LinkedList<Car>();
+	LinkedList<Card> cards = new LinkedList<Card>();
 	Random rnd = new Random();
-	boolean isCarGrabbed;
-	int[] CarGrabbed; //size, speed
 	
 	public void start(){
 		try {
@@ -51,6 +54,9 @@ public class App
 		//Initialization of Game Elements
 		for(int i = 0; i < 5; i++){
 			goals.add(new Goal(i));
+		}
+		for(int i = 0; i < 5; i++){
+			cards.add(new Card(cardsX + cardsXSize * i, cardsY, cardsXSize - 5, cardsYSize, 1, 2));
 		}
 	}
 	
@@ -90,8 +96,9 @@ public class App
 			drawForeground();
 			//key Polling
 			if(Mouse.isButtonDown(0)){
-				int mouseX = Mouse.getX();
-				int mouseY = Mouse.getY();
+				int mouseX = getMouseX();
+				int mouseY = getMouseY();
+				//if()
 				System.out.println("Mouse: " + mouseX + ", " + mouseY);
 			}
     		//Syncronizing stuff
@@ -127,6 +134,7 @@ public class App
     }
     
     public void drawForeground(){
+    	//side panel backgrounds
     	float color = 0f;
     	GL11.glColor3f(color,color,color);
     	GL11.glBegin(GL11.GL_QUADS);
@@ -140,6 +148,13 @@ public class App
     		GL11.glVertex2d(topLeftX + numCols * columnsize, ySize);
     		GL11.glVertex2d(topLeftX + numCols * columnsize, 0);
     	GL11.glEnd();
+    	
+    	//cards
+		ListIterator<Card> cIt = cards.listIterator();
+		while(cIt.hasNext()){
+			Card c = cIt.next();
+			c.draw();
+		}
     }
     
     public void update(){
@@ -149,6 +164,14 @@ public class App
     		time = 0;
     	}
     	time++;
+    }
+    
+    public  int getMouseX(){
+    	return Mouse.getX();
+    }
+    
+    public int getMouseY(){
+    	return ySize - Mouse.getY();
     }
     
     //My utility classes
@@ -294,6 +317,29 @@ public class App
 				}
 			}
 		}
+    	
+    }
+    
+    public class Card extends Entity{
+
+    	boolean isGrabbed;
+    	int speed;
+    	int size;
+    	
+		public Card(double x, double y, double xSize, double ySize, int speed, int size) {
+			super(x, y, xSize, ySize);
+			this.speed = speed;
+			this.size = size;
+			isGrabbed = false;
+		}
+		
+		public boolean isCard(double x, double y){
+			if(x > this.x && x < this.x + xSize && y > this.y && y < this.y + ySize)
+				return true;
+			return false;
+		}
+		
+		
     	
     }
     	
