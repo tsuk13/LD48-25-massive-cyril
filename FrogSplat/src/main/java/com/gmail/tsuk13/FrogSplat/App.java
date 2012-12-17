@@ -42,6 +42,8 @@ public class App
 		while(!Display.isCloseRequested()){
     		//GameLoop
 			drawBackground();
+			Frog f = new Frog(0);
+			f.draw();
 			//key Polling
 			if(Mouse.isButtonDown(0)){
 				int mouseX = Mouse.getX();
@@ -86,16 +88,20 @@ public class App
     	public double y;
     	public double xSize;
     	public double ySize;
+    	public float colorR;
+    	public float colorG;
+    	public float colorB;
     	
     	public Entity(double x, double y, double xSize, double ySize){
     		this.x = x;
     		this.y = y;
     		this.xSize = xSize;
     		this.ySize = ySize;
+    		colorR = colorG = colorB = .5f;
     	}
     	
     	public void draw(){
-    		GL11.glColor3f(.5f, .5f, 1f);
+    		GL11.glColor3f(colorR, colorG, colorB);
 			GL11.glBegin(GL11.GL_QUADS);
 				GL11.glVertex2d(x, y);
 				GL11.glVertex2d(x+xSize, y);
@@ -118,6 +124,18 @@ public class App
     		return ret;
     	}
     	
+    	
+    }
+    
+    public class Frog extends Entity{
+    	int lane;
+
+		public Frog(int lane) {
+			super(topLeftX + lane * 2 * columnsize, topLeftY + (numRows - 1) * rowsize, columnsize, rowsize);
+			this.lane = lane;
+			colorR = colorB = 0;
+			colorG = 1;
+		}
     	
     }
     	
