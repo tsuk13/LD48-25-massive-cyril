@@ -29,6 +29,7 @@ public class App
 	int time = 0;
 	LinkedList<Frog> frogs = new LinkedList<Frog>();
 	LinkedList<Goal> goals = new LinkedList<Goal>();
+	LinkedList<Car> cars = new LinkedList<Car>();
 	Random rnd = new Random();
 	
 	public void start(){
@@ -56,12 +57,26 @@ public class App
     		//GameLoop
 			update();
 			drawBackground();
+			//frogs
 			ListIterator<Frog> fIt = frogs.listIterator();
 			while(fIt.hasNext()){
 				Frog f = fIt.next();
 				f.update();
 				f.draw();
 			}
+			//cars
+			ListIterator<Car> cIt = cars.listIterator();
+			while(cIt.hasNext()){
+				Car c = cIt.next();
+				c.update();
+				if(c.x > topLeftX + numCols*columnsize || c.x + c.xSize < topLeftX){
+					int tmp = cIt.previousIndex();
+					cars.remove(tmp);
+					cIt = cars.listIterator(tmp);
+				}
+				c.draw();
+			}
+			//goals
 			ListIterator<Goal> gIt = goals.listIterator();
 			while(gIt.hasNext()){
 				Goal g = gIt.next();
@@ -109,6 +124,7 @@ public class App
     public void update(){
     	if(time == 60){
     		frogs.add(new Frog(rnd.nextInt(5)));
+    		cars.add(new Car(rnd.nextInt(11) + 1, 2, 1, rnd.nextInt(2)));
     		time = 0;
     	}
     	time++;
@@ -129,7 +145,8 @@ public class App
     		this.y = y;
     		this.xSize = xSize;
     		this.ySize = ySize;
-    		colorR = colorG = colorB = .5f;
+    		colorR = colorG =.5f;
+    		colorB = 1f;
     	}
     	
     	public void draw(){
@@ -222,6 +239,27 @@ public class App
 					fIt = frogs.listIterator(tmp);
 				}
 			}
+		}
+    	
+    }
+    
+    public class Car extends Entity{
+    	int lane;
+    	int speed;
+    	int dir;
+
+		public Car(int lane, int size, int speed, int dir) { //dir: 0 is from left 1 is from right
+			super(topLeftX + dir * (numCols * columnsize), topLeftY + lane * rowsize, columnsize * size, rowsize);
+			this.lane = lane;
+			this.speed = speed;
+			this.dir = dir;
+		}
+		
+		public void update(){
+			if(dir == 0)
+				move(speed, 0);
+			else
+				move(-speed, 0);
 		}
     	
     }
