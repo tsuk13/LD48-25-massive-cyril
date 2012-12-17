@@ -21,6 +21,7 @@ public class App
 	double numRows = 13;
 	double topLeftX = (xSize - (columnsize * numCols))/2;
 	double topLeftY = 0;
+	int frogSpeed = 60;
 	
 	public void start(){
 		try {
@@ -39,10 +40,12 @@ public class App
 	}
 	
 	public void loop(){
+
+		Frog f = new Frog(0);
 		while(!Display.isCloseRequested()){
     		//GameLoop
 			drawBackground();
-			Frog f = new Frog(0);
+			f.update();
 			f.draw();
 			//key Polling
 			if(Mouse.isButtonDown(0)){
@@ -124,17 +127,31 @@ public class App
     		return ret;
     	}
     	
+    	public void move(double x, double y){
+    		this.x = this.x + x;
+    		this.y = this.y + y;
+    	}
+    	
     	
     }
     
     public class Frog extends Entity{
     	int lane;
+    	int time = 0;
 
 		public Frog(int lane) {
 			super(topLeftX + lane * 2 * columnsize, topLeftY + (numRows - 1) * rowsize, columnsize, rowsize);
 			this.lane = lane;
 			colorR = colorB = 0;
 			colorG = 1;
+		}
+		
+		public void update(){
+			if(time >= frogSpeed){
+				time = 0;
+				move(0, -rowsize);
+			}
+			time++;
 		}
     	
     }
