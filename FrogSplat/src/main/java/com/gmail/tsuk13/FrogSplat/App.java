@@ -54,6 +54,8 @@ public class App
 	
 	public void loop(){
 		while(!Display.isCloseRequested()){
+			//clean Screen
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
     		//GameLoop
 			update();
 			drawBackground();
@@ -119,6 +121,10 @@ public class App
 			GL11.glEnd();
     	}
     	
+    }
+    
+    public void drawForeground(){
+    	float color = 0f;
     }
     
     public void update(){
