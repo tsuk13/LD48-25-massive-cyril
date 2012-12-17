@@ -114,6 +114,19 @@ public class App
 				}
 				System.out.println("Mouse: " + mouseX + ", " + mouseY);
 			}
+			else if(isCardHeld){
+				isCardHeld = false;
+				int mouseX = getMouseX();
+				int mouseY = getMouseY();
+				int dir = 0;
+				int lane;
+				lane = (int) (mouseY / rowsize);
+				if(lane > 1 && lane < 13){
+					if(mouseX > xSize/2)
+						dir = 1;
+					cars.add(new Car(lane,  cardHeld.size, cardHeld.speed, dir));
+				}
+			}
     		//Syncronizing stuff
 			Display.sync(60);
 			Display.update();
@@ -172,8 +185,10 @@ public class App
     
     public void update(){
     	if(time == 60){
+    		//test frogs
     		frogs.add(new Frog(rnd.nextInt(5)));
-    		cars.add(new Car(rnd.nextInt(11) + 1, 2, 1, rnd.nextInt(2)));
+    		//test cars
+    		//cars.add(new Car(rnd.nextInt(11) + 1, 2, 1, rnd.nextInt(2)));
     		time = 0;
     	}
     	time++;
@@ -218,9 +233,13 @@ public class App
     	
     	public int[] toGridX(){
     		int[] ret = new int[2];
-    		ret[0] = (int)((x - topLeftX)/columnsize);
+    		double actualx =(x - topLeftX)/columnsize;
+    		if(actualx < 0)
+        		ret[0] = (int)(actualx) - 1;
+    		else
+    			ret[0] = (int)(actualx);
     		ret[1] = (int)(xSize/columnsize);
-    		if(Math.abs((x - topLeftX)/columnsize ) - (double)ret[0] > .1)
+    		if(Math.abs(actualx - (double)ret[0]) > .1)
     			ret[1]++;
     		return ret;
     	}
@@ -324,6 +343,8 @@ public class App
 				Frog f = fIt.next();
 				if(this.isCollide(f)){
 					System.out.println("frog was hit on lane: " + this.lane);
+					System.out.println("Cars grid x was: " + this.toGridX()[0] + " size: " + this.toGridX()[1]);
+					System.out.println("actual x was: " + (x - topLeftX)/columnsize );
 					int tmp = fIt.previousIndex();
 					frogs.remove(tmp);
 					fIt = frogs.listIterator(tmp);
