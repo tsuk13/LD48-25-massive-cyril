@@ -161,14 +161,16 @@ public class App
     	
     	public int[] toGridX(){
     		int[] ret = new int[2];
-    		ret[0] = (int)(x - topLeftX);
-    		ret[1] = (int)(xSize/rowsize);
+    		ret[0] = (int)((x - topLeftX)/columnsize);
+    		ret[1] = (int)(xSize/columnsize);
+    		if(Math.abs((x - topLeftX)/columnsize ) - (double)ret[0] > .1)
+    			ret[1]++;
     		return ret;
     	}
     	
     	public int[] toGridY(){
     		int[] ret = new int[2];
-    		ret[0] = (int)(y - topLeftY);
+    		ret[0] = (int)((y - topLeftY)/rowsize);
     		ret[1] = (int)(ySize/columnsize);
     		return ret;
     	}
@@ -249,7 +251,7 @@ public class App
     	int dir;
 
 		public Car(int lane, int size, int speed, int dir) { //dir: 0 is from left 1 is from right
-			super(topLeftX + dir * (numCols * columnsize), topLeftY + lane * rowsize, columnsize * size, rowsize);
+			super(topLeftX - columnsize * size + dir * ((numCols + size) * columnsize), topLeftY + lane * rowsize, columnsize * size, rowsize);
 			this.lane = lane;
 			this.speed = speed;
 			this.dir = dir;
@@ -260,6 +262,16 @@ public class App
 				move(speed, 0);
 			else
 				move(-speed, 0);
+			ListIterator<Frog> fIt = frogs.listIterator();
+			while(fIt.hasNext()){
+				Frog f = fIt.next();
+				if(this.isCollide(f)){
+					System.out.println("frog was hit on lane: " + this.lane);
+					int tmp = fIt.previousIndex();
+					frogs.remove(tmp);
+					fIt = frogs.listIterator(tmp);
+				}
+			}
 		}
     	
     }
