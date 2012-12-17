@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Random;
 
-import javax.swing.text.html.HTMLDocument.Iterator;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -30,6 +28,7 @@ public class App
 	int frogSpeed = 60;
 	int time = 0;
 	LinkedList<Frog> frogs = new LinkedList<Frog>();
+	LinkedList<Goal> goals = new LinkedList<Goal>();
 	Random rnd = new Random();
 	
 	public void start(){
@@ -46,6 +45,10 @@ public class App
 		GL11.glOrtho(0, xSize, ySize, 0, 0, 1);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		//Initialization of Game Elements
+		for(int i = 0; i < 5; i++){
+			goals.add(new Goal(i));
+		}
 	}
 	
 	public void loop(){
@@ -58,6 +61,12 @@ public class App
 				Frog f = fIt.next();
 				f.update();
 				f.draw();
+			}
+			ListIterator<Goal> gIt = goals.listIterator();
+			while(gIt.hasNext()){
+				Goal g = gIt.next();
+				g.update();
+				g.draw();
 			}
 			//key Polling
 			if(Mouse.isButtonDown(0)){
@@ -152,6 +161,21 @@ public class App
     		this.y = this.y + y;
     	}
     	
+    	public boolean isCollide(Entity e){
+    		int[] selfX = this.toGridX();
+    		int[] selfY = this.toGridY();
+    		int[] trgtX = e.toGridX();
+    		int[] trgtY = e.toGridY();
+    		for(int i = 0; i < selfX[1]; i++)
+    			for(int j = 0; j < selfY[1]; j++)
+    				for(int ti = 0; ti < trgtX[1]; ti++)
+    					for(int tj = 0; tj < trgtY[1]; tj++){
+    						if(selfX[0] + i == trgtX[0] + ti && selfY[0] + j == trgtY[0] + tj)
+    							return true;
+    			}
+    		return false;
+    	}
+    	
     	
     }
     
@@ -172,6 +196,32 @@ public class App
 				move(0, -rowsize);
 			}
 			time++;
+		}
+    	
+    }
+    
+    public class Goal extends Entity{
+    	int lane;
+
+		public Goal(int lane) {
+			super(topLeftX + lane * 2 * columnsize, topLeftY, columnsize, rowsize);
+			this.lane = lane;
+			colorB =0;
+			colorR = 142/255f;
+			colorG = 178/255f;
+		}
+		
+		public void update(){
+			ListIterator<Frog> fIt = frogs.listIterator();
+			while(fIt.hasNext()){
+				Frog f = fIt.next();
+				if(this.isCollide(f)){
+					System.out.println("GOAAAALLLLL!!!!!!!");
+					int tmp = fIt.previousIndex();
+					frogs.remove(tmp);
+					fIt = frogs.listIterator(tmp);
+				}
+			}
 		}
     	
     }
