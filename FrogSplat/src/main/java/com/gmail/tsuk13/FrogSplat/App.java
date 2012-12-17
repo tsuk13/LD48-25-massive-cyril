@@ -15,6 +15,12 @@ public class App
 	
 	public int xSize = 800;
 	public int ySize = 600;
+	double rowsize = 37;
+	double columnsize = 37;
+	double numCols = 9;
+	double numRows = 13;
+	double topLeftX = (xSize - (columnsize * numCols))/2;
+	double topLeftY = 0;
 	
 	public void start(){
 		try {
@@ -35,8 +41,7 @@ public class App
 	public void loop(){
 		while(!Display.isCloseRequested()){
     		//GameLoop
-			Entity e = new Entity(50,50,20,20);
-			e.draw();
+			drawBackground();
 			//key Polling
 			if(Mouse.isButtonDown(0)){
 				int mouseX = Mouse.getX();
@@ -61,6 +66,20 @@ public class App
     	app.end();
     }
     
+    public void drawBackground(){
+    	float color = .25f;
+    	for(int i = 0; i < numRows; i++, color += .05){
+    		GL11.glColor3f(color, color, color);
+			GL11.glBegin(GL11.GL_QUADS);
+				GL11.glVertex2d(topLeftX, topLeftY + i * rowsize );
+				GL11.glVertex2d(topLeftX, topLeftY + (i + 1) * rowsize);
+				GL11.glVertex2d(topLeftX + numCols * columnsize, topLeftY + (i + 1) * rowsize);
+				GL11.glVertex2d(topLeftX + numCols * columnsize, topLeftY + i * rowsize);
+			GL11.glEnd();
+    	}
+    	
+    }
+    
     //My utility classes
     public class Entity{
     	public double x;
@@ -83,6 +102,20 @@ public class App
 				GL11.glVertex2d(x+xSize, y+ySize);
 				GL11.glVertex2d(x, y+ySize);
 			GL11.glEnd();
+    	}
+    	
+    	public int[] toGridX(){
+    		int[] ret = new int[2];
+    		ret[0] = (int)(x - topLeftX);
+    		ret[1] = (int)(xSize/rowsize);
+    		return ret;
+    	}
+    	
+    	public int[] toGridY(){
+    		int[] ret = new int[2];
+    		ret[0] = (int)(y - topLeftY);
+    		ret[1] = (int)(ySize/columnsize);
+    		return ret;
     	}
     	
     	
