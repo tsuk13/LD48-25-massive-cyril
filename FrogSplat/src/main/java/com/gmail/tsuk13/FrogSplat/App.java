@@ -1,6 +1,7 @@
 package com.gmail.tsuk13.FrogSplat;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -12,7 +13,6 @@ import org.lwjgl.opengl.GL11;
 public class App 
 {
 	
-	public boolean running = true;
 	public int xSize = 800;
 	public int ySize = 600;
 	
@@ -33,10 +33,16 @@ public class App
 	}
 	
 	public void loop(){
-		while(running){
+		while(!Display.isCloseRequested()){
     		//GameLoop
 			Entity e = new Entity(50,50,20,20);
-			e.draw();	
+			e.draw();
+			//key Polling
+			if(Mouse.isButtonDown(0)){
+				int mouseX = Mouse.getX();
+				int mouseY = Mouse.getY();
+				System.out.println("Mouse: " + mouseX + ", " + mouseY);
+			}
     		//Syncronizing stuff
 			Display.sync(60);
 			Display.update();
