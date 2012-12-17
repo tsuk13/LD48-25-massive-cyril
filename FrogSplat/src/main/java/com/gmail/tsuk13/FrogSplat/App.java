@@ -1,5 +1,11 @@
 package com.gmail.tsuk13.FrogSplat;
 
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Random;
+
+import javax.swing.text.html.HTMLDocument.Iterator;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -22,6 +28,9 @@ public class App
 	double topLeftX = (xSize - (columnsize * numCols))/2;
 	double topLeftY = 0;
 	int frogSpeed = 60;
+	int time = 0;
+	LinkedList<Frog> frogs = new LinkedList<Frog>();
+	Random rnd = new Random();
 	
 	public void start(){
 		try {
@@ -40,13 +49,16 @@ public class App
 	}
 	
 	public void loop(){
-
-		Frog f = new Frog(0);
 		while(!Display.isCloseRequested()){
     		//GameLoop
+			update();
 			drawBackground();
-			f.update();
-			f.draw();
+			ListIterator<Frog> fIt = frogs.listIterator();
+			while(fIt.hasNext()){
+				Frog f = fIt.next();
+				f.update();
+				f.draw();
+			}
 			//key Polling
 			if(Mouse.isButtonDown(0)){
 				int mouseX = Mouse.getX();
@@ -83,6 +95,14 @@ public class App
 			GL11.glEnd();
     	}
     	
+    }
+    
+    public void update(){
+    	if(time == 60){
+    		frogs.add(new Frog(rnd.nextInt(5)));
+    		time = 0;
+    	}
+    	time++;
     }
     
     //My utility classes
