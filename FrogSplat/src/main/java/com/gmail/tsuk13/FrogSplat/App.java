@@ -31,6 +31,8 @@ public class App
 	LinkedList<Goal> goals = new LinkedList<Goal>();
 	LinkedList<Car> cars = new LinkedList<Car>();
 	Random rnd = new Random();
+	boolean isCarGrabbed;
+	int[] CarGrabbed; //size, speed
 	
 	public void start(){
 		try {
@@ -85,6 +87,7 @@ public class App
 				g.update();
 				g.draw();
 			}
+			drawForeground();
 			//key Polling
 			if(Mouse.isButtonDown(0)){
 				int mouseX = Mouse.getX();
@@ -125,6 +128,18 @@ public class App
     
     public void drawForeground(){
     	float color = 0f;
+    	GL11.glColor3f(color,color,color);
+    	GL11.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2d(0,0);
+			GL11.glVertex2d(topLeftX, 0);
+			GL11.glVertex2d(topLeftX, ySize);
+			GL11.glVertex2d(0, ySize);
+
+    		GL11.glVertex2d(xSize, 0);
+    		GL11.glVertex2d(xSize, ySize);
+    		GL11.glVertex2d(topLeftX + numCols * columnsize, ySize);
+    		GL11.glVertex2d(topLeftX + numCols * columnsize, 0);
+    	GL11.glEnd();
     }
     
     public void update(){
