@@ -139,6 +139,7 @@ public class App
 					if(mouseX > xSize/2)
 						dir = 1;
 					cars.add(new Car(lane,  cardHeld.size, cardHeld.speed, dir));
+					points -= cardHeld.cost;
 				}
 			}
     		//Syncronizing stuff
@@ -189,6 +190,29 @@ public class App
     		GL11.glVertex2d(topLeftX + numCols * columnsize, ySize);
     		GL11.glVertex2d(topLeftX + numCols * columnsize, 0);
     	GL11.glEnd();
+    	//Points
+    	int rows = points / 5 + 1;
+    	double pointSize = (numRows * rowsize) / rows;
+    	double tmp = topLeftX / 5;
+    	if (tmp < pointSize)
+    		pointSize = tmp;
+    	pointSize -= 10;
+    	GL11.glColor3f(1f, 1f, 0f);
+    	GL11.glBegin(GL11.GL_QUADS);
+    	int xStart = 5;
+    	int yStart = 5;
+    	int p = 0;
+    	for(int i = 0; p < points; i++){
+    		for(int j = 0; j < 5 && p < points; j++, p++){
+    			GL11.glVertex2d(xStart, yStart);
+				GL11.glVertex2d(xStart + pointSize, yStart);
+				GL11.glVertex2d(xStart + pointSize, yStart + pointSize);
+				GL11.glVertex2d(xStart, yStart + pointSize);
+				xStart += pointSize + 5;
+    		}
+    		xStart = 5;
+    		yStart += pointSize + 5;
+    	}
     	
     	//cards
 		ListIterator<Card> cIt = cards.listIterator();
