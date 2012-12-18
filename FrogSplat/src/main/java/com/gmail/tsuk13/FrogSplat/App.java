@@ -1,5 +1,9 @@
 package com.gmail.tsuk13.FrogSplat;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.TrueTypeFont;
+
+import java.awt.Font;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Random;
@@ -9,6 +13,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.UnicodeFont;
 
 /**
  * Hello world!
@@ -38,6 +43,10 @@ public class App
 	Random rnd = new Random();
 	boolean isCardHeld = false;
 	Card cardHeld;
+	int points = 25;
+	//font studds
+	Font awtFont;
+	TrueTypeFont font;
 	
 	public void start(){
 		try {
@@ -53,13 +62,18 @@ public class App
 		GL11.glOrtho(0, xSize, ySize, 0, 0, 1);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		//Initialization of fonts
+		awtFont = new Font("Dialog", Font.PLAIN, 24);
+		System.out.println(awtFont.getFontName());
+		font = new TrueTypeFont(awtFont, false);
 		//Initialization of Game Elements
 		for(int i = 0; i < 5; i++){
 			goals.add(new Goal(i));
 		}
 		for(int i = 0; i < 5; i++){
-			cards.add(new Card(cardsX + cardsXSize * i, cardsY, cardsXSize - 5, cardsYSize, 1, 2));
+			cards.add(new Card(cardsX + cardsXSize * i, cardsY, cardsXSize - 5, cardsYSize, 1, 2, i + 1));
 		}
+		
 	}
 	
 	public void loop(){
@@ -136,6 +150,7 @@ public class App
 	
 	public void end(){
 		Display.destroy();
+		System.exit(0);
 	}
 	
     public static void main( String[] args ){
@@ -297,6 +312,7 @@ public class App
     
     public class Goal extends Entity{
     	int lane;
+    	boolean scored = false;
 
 		public Goal(int lane) {
 			super(topLeftX + lane * 2 * columnsize, topLeftY, columnsize, rowsize);
@@ -312,10 +328,17 @@ public class App
 				Frog f = fIt.next();
 				if(this.isCollide(f)){
 					System.out.println("Goal at lane: " + this.lane);
+					scored = true;
 					int tmp = fIt.previousIndex();
 					frogs.remove(tmp);
 					fIt = frogs.listIterator(tmp);
 				}
+			}
+		}
+		public void draw(){
+			super.draw();
+			if(scored){
+				colorR = colorG = colorB = 0f;
 			}
 		}
     	
@@ -359,18 +382,37 @@ public class App
     	boolean isGrabbed;
     	int speed;
     	int size;
+    	int cost;
     	
-		public Card(double x, double y, double xSize, double ySize, int speed, int size) {
+		public Card(double x, double y, double xSize, double ySize, int speed, int size, int cost) {
 			super(x, y, xSize, ySize);
 			this.speed = speed;
 			this.size = size;
 			isGrabbed = false;
+			this.cost = cost;
 		}
 		
 		public boolean isCard(double x, double y){
 			if(x > this.x && x < this.x + xSize && y > this.y && y < this.y + ySize)
 				return true;
 			return false;
+		}
+		
+		public void draw(){
+			super.draw();
+			GL11.glColor3f(1f, 1f, 0f);
+			GL11.glBegin(GL11.GL_QUADS);
+			double pointSize = xSize / 5 - 10;
+			double xStart = x + 5;
+			double yStart = y + ySize - 5 - pointSize;
+			for(int i = 0; i < cost; i++){
+				GL11.glVertex2d(xStart, yStart);
+				GL11.glVertex2d(xStart + pointSize, yStart);
+				GL11.glVertex2d(xStart + pointSize, yStart + pointSize);
+				GL11.glVertex2d(xStart, yStart + pointSize);
+				xStart += pointSize + 5;
+			}
+			GL11.glEnd();
 		}
 		public void mouseDraw(int xin, int yin){
 			int x = (int) (xin - columnsize * size * .5);
