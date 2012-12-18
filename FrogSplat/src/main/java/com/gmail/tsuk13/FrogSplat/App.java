@@ -1,9 +1,6 @@
 package com.gmail.tsuk13.FrogSplat;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.TrueTypeFont;
 
-import java.awt.Font;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Random;
@@ -13,7 +10,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.UnicodeFont;
 
 /**
  * Hello world!
@@ -30,10 +26,12 @@ public class App
 	double numRows = 13;
 	double topLeftX = (xSize - (columnsize * numCols))/2;
 	double topLeftY = 0;
+	//game tweaking settingd
 	int frogSpeed = 60;
 	int frogSpeedIncrease = 1;
-	int frogTime = 500;
+	int frogTime = 350;
 	int frogTimeIncrease = 5;
+	////////
 	int time = 0;
 	double cardsY = topLeftY + numRows*rowsize + 5;
 	double cardsYSize = ySize - 5 - cardsY;
@@ -48,8 +46,6 @@ public class App
 	Card cardHeld;
 	int points = 25;
 	//font studds
-	Font awtFont;
-	TrueTypeFont font;
 	
 	public void start(){
 		try {
@@ -65,10 +61,6 @@ public class App
 		GL11.glOrtho(0, xSize, ySize, 0, 0, 1);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		//Initialization of fonts
-		awtFont = new Font("Dialog", Font.PLAIN, 24);
-		System.out.println(awtFont.getFontName());
-		font = new TrueTypeFont(awtFont, false);
 		//Initialization of Game Elements
 		for(int i = 0; i < 5; i++){
 			goals.add(new Goal(i));
@@ -151,7 +143,7 @@ public class App
 				if(isCardHeld){
 					cardHeld.mouseDraw(mouseX, mouseY);
 				}
-				System.out.println("Mouse: " + mouseX + ", " + mouseY);
+				//System.out.println("Mouse: " + mouseX + ", " + mouseY);
 			}
 			else if(isCardHeld){
 				isCardHeld = false;
@@ -230,7 +222,7 @@ public class App
     	int xStart = 5;
     	int yStart = 5;
     	int p = 0;
-    	for(int i = 0; p < points; i++){
+    	for(; p < points; ){
     		for(int j = 0; j < 5 && p < points; j++, p++){
     			GL11.glVertex2d(xStart, yStart);
 				GL11.glVertex2d(xStart + pointSize, yStart);
@@ -388,7 +380,7 @@ public class App
 			while(fIt.hasNext()){
 				Frog f = fIt.next();
 				if(this.isCollide(f)){
-					System.out.println("Goal at lane: " + this.lane);
+					//System.out.println("Goal at lane: " + this.lane);
 					scored = true;
 					int tmp = fIt.previousIndex();
 					frogs.remove(tmp);
