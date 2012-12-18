@@ -31,6 +31,9 @@ public class App
 	double topLeftX = (xSize - (columnsize * numCols))/2;
 	double topLeftY = 0;
 	int frogSpeed = 60;
+	int frogSpeedIncrease = 1;
+	int frogTime = 500;
+	int frogTimeIncrease = 5;
 	int time = 0;
 	double cardsY = topLeftY + numRows*rowsize + 5;
 	double cardsYSize = ySize - 5 - cardsY;
@@ -70,9 +73,31 @@ public class App
 		for(int i = 0; i < 5; i++){
 			goals.add(new Goal(i));
 		}
-		for(int i = 0; i < 5; i++){
-			cards.add(new Card(cardsX + cardsXSize * i, cardsY, cardsXSize - 5, cardsYSize, 1, 2, i + 1));
-		}
+		int i = 0;
+		cards.add(new Card(cardsX + cardsXSize * i, cardsY, cardsXSize - 5, cardsYSize, 1, 1, 1));
+		cards.getLast().colorR = 0f;
+		cards.getLast().colorG = 0f;
+		cards.getLast().colorB = 1f;
+		i++;
+		cards.add(new Card(cardsX + cardsXSize * i, cardsY, cardsXSize - 5, cardsYSize, 2, 1, 2));
+		cards.getLast().colorR = .25f;
+		cards.getLast().colorG = 0f;
+		cards.getLast().colorB = .75f;
+		i++;
+		cards.add(new Card(cardsX + cardsXSize * i, cardsY, cardsXSize - 5, cardsYSize, 3, 2, 3));
+		cards.getLast().colorR = .5f;
+		cards.getLast().colorG = 0f;
+		cards.getLast().colorB = .5f;
+		i++;
+		cards.add(new Card(cardsX + cardsXSize * i, cardsY, cardsXSize - 5, cardsYSize, 3, 3, 4));
+		cards.getLast().colorR = .75f;
+		cards.getLast().colorG = 0f;
+		cards.getLast().colorB = .25f;
+		i++;
+		cards.add(new Card(cardsX + cardsXSize * i, cardsY, cardsXSize - 5, cardsYSize, 2, 2, 5));
+		cards.getLast().colorR = 1f;
+		cards.getLast().colorG = 0f;
+		cards.getLast().colorB = 0f;
 		
 	}
 	
@@ -139,6 +164,9 @@ public class App
 					if(mouseX > xSize/2)
 						dir = 1;
 					cars.add(new Car(lane,  cardHeld.size, cardHeld.speed, dir));
+					cars.getLast().colorR = cardHeld.colorR;
+					cars.getLast().colorG = cardHeld.colorG;
+					cars.getLast().colorB = cardHeld.colorB;
 					points -= cardHeld.cost;
 				}
 			}
@@ -223,7 +251,7 @@ public class App
     }
     
     public void update(){
-    	if(time == 60){
+    	if(time == frogTime){
     		//test frogs
     		frogs.add(new Frog(rnd.nextInt(5)));
     		//test cars
@@ -399,6 +427,8 @@ public class App
 				Frog f = fIt.next();
 				if(this.isCollide(f)){
 					points += 3;
+					frogSpeed -=frogSpeedIncrease;
+					frogTime -= frogTimeIncrease;
 					int tmp = fIt.previousIndex();
 					frogs.remove(tmp);
 					fIt = frogs.listIterator(tmp);
@@ -430,7 +460,17 @@ public class App
 		}
 		
 		public void draw(){
-			super.draw();
+			//base
+			GL11.glColor3f(.5f, .5f, .5f);
+			GL11.glBegin(GL11.GL_QUADS);
+				GL11.glVertex2d(x, y);
+				GL11.glVertex2d(x+xSize, y);
+				GL11.glVertex2d(x+xSize, y+ySize);
+				GL11.glVertex2d(x, y+ySize);
+			GL11.glEnd();
+			//car
+			mouseDraw( (int)(x + xSize / 2),(int)( y + ySize / 2)   );
+			//points
 			GL11.glColor3f(1f, 1f, 0f);
 			GL11.glBegin(GL11.GL_QUADS);
 			double pointSize = xSize / 5 - 10;
