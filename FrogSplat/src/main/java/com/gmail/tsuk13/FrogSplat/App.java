@@ -231,6 +231,15 @@ public class App
     		time = 0;
     	}
     	time++;
+    	//goals
+		ListIterator<Goal> gIt = goals.listIterator();
+		while(gIt.hasNext()){
+			Goal g = gIt.next();
+			if(!g.scored){
+				break;
+			}
+			end();
+		}
     }
     
     public  int getMouseX(){
@@ -370,7 +379,7 @@ public class App
     
     public class Car extends Entity{
     	int lane;
-    	int speed;
+    	double speed;
     	int dir;
 
 		public Car(int lane, int size, int speed, int dir) { //dir: 0 is from left 1 is from right
@@ -389,9 +398,7 @@ public class App
 			while(fIt.hasNext()){
 				Frog f = fIt.next();
 				if(this.isCollide(f)){
-					System.out.println("frog was hit on lane: " + this.lane);
-					System.out.println("Cars grid x was: " + this.toGridX()[0] + " size: " + this.toGridX()[1]);
-					System.out.println("actual x was: " + (x - topLeftX)/columnsize );
+					points += 3;
 					int tmp = fIt.previousIndex();
 					frogs.remove(tmp);
 					fIt = frogs.listIterator(tmp);
